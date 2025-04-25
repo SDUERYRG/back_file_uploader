@@ -1,3 +1,7 @@
+/*
+ * @author 作者姓名
+ * @date 日期
+ */
 package com.example.demo.service;
 
 
@@ -13,4 +17,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public  interface UserService extends IService<User>{
     
     public User userAuthentication(User user);
+
+    public void sendMail(String mail);
+
+    public boolean verifyCode(String email, String inputCode);
 }
