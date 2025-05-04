@@ -6,6 +6,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
+import com.example.demo.utils.MD5;
 import com.example.demo.utils.Result;
 import com.example.demo.utils.ResultCode;
 
@@ -76,6 +77,34 @@ public class UserController {
             return Result.success(ResultCode.SUCCESS.code(), "验证码验证成功");
         } else {
             return Result.error(ResultCode.CODE_ERROR.code(),ResultCode.CODE_ERROR.message());
+        }
+    }
+
+    /**
+     * 注册
+     * @param user 用户信息
+     * @return 注册结果
+     * @author wyc
+     * @date 5/4
+     */
+    @PostMapping("/userRegister")
+    @Transactional
+    public Result userRegister(@RequestBody User user) throws Exception {
+
+        //密码MD5加密
+        user.setPassword(MD5.md5PlusSalt(user.getPassword()));
+        //默认用户名
+        System.out.println(user);
+        try{
+            if (userService.save(user)) {
+                return Result.success(ResultCode.SUCCESS.code(), "注册成功(✿◠‿◠)");
+            } else {
+                return Result.error(ResultCode.USER_REGISTER_ERROR.code(), ResultCode.USER_REGISTER_ERROR.message());
+            }
+        } catch (Exception e) {
+            System.out.println(ResultCode.USER_HAS_EXISTED.code());
+            System.out.println(ResultCode.USER_HAS_EXISTED.message());
+            return Result.error(ResultCode.USER_HAS_EXISTED.code(), ResultCode.USER_HAS_EXISTED.message());
         }
     }
 }
