@@ -24,10 +24,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/user")
 public class UserController {
     @Resource
     private UserService userService;
@@ -77,7 +79,7 @@ public class UserController {
 
         currentUser.setPassword(user.getPassword());
         if (currentUser != null){
-            return Result.success(currentUser, token);  //登录成功，并返回token
+            return Result.success(200,token, currentUser);  //登录成功，并返回token
         }
         else
             return Result.error(ResultCode.ERROR.code(), "未知错误,登录失败(≧﹏ ≦)");
@@ -153,6 +155,39 @@ public class UserController {
             System.out.println(ResultCode.USER_HAS_EXISTED.code());
             System.out.println(ResultCode.USER_HAS_EXISTED.message());
             return Result.error(ResultCode.USER_HAS_EXISTED.code(), ResultCode.USER_HAS_EXISTED.message());
+        }
+    }
+
+    /**
+     * 根据ID获取用户信息
+     * @param id 用户ID
+     * @return 用户信息
+     */
+    @GetMapping("/getById/{id}")
+    public Result getUserById(@PathVariable("id") Integer id) {
+        try {
+            System.out.println("===== 获取用户信息 =====");
+            System.out.println("用户ID: " + id);
+
+            User user = userService.getById(id);
+            if (user == null) {
+                System.err.println("用户不存在，ID: " + id);
+                return Result.error(404, "用户不存在");
+            }
+
+            // 创建安全用户对象，排除敏感信息
+            Map<String, Object> safeUser = new HashMap<>();
+            safeUser.put("id", user.getId());
+            safeUser.put("username", user.getUsername());
+            safeUser.put("name", user.getName());
+            safeUser.put("avatar", user.getAvatar());
+
+            System.out.println("返回用户信息: " + safeUser);
+            return Result.success(200, "获取用户信息成功", safeUser);
+        } catch (Exception e) {
+            System.err.println("获取用户信息失败: " + e.getMessage());
+            e.printStackTrace();
+            return Result.error(500, "获取用户信息失败: " + e.getMessage());
         }
     }
 }

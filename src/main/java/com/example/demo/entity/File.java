@@ -15,4 +15,8 @@ public class File {
     private Integer userid;
     private String filetype;
     private Integer filesize;
+    private Integer lookednum;
+    private Integer collectnum;
+    private Integer downloadnum;;
+    private String state;
 }

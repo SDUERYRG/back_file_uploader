@@ -4,13 +4,14 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-@TableName("user")
+import java.util.Date;
+
+@TableName("download")
 @Data
-public class User {
+public class Download {
     @TableId("id")
     private Integer id;
-    private String username;
-    private String password;
-    private String name;
-    private String avatar;
+    private Integer userid;
+    private Integer fileid;
+    private Date time;
 }
